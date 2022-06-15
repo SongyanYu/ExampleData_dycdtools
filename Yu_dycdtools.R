@@ -23,7 +23,7 @@ lake.temp <- read.csv("calibration_data/Obs_data_template.csv")
 lake.temp$Date <- as.Date(lake.temp$Date, format = '%Y-%m-%d')
 
 # the current setting of calib_assist would take 1 hour to run on 7 cores.
-# to reduce running time, try changing 'combination' to 'random', and
+# if only for demo purpose, try changing 'combination' to 'random', and
 # add a new argument 'n = 3'.
 calib_assist(cal.para = "calibration_data/Calibration_parameters.csv",
              combination = "all",
@@ -78,19 +78,19 @@ temp.interpolated <- interpol(layerHeights = var.values$dyresmLAYER_HTS_Var,
                               by.value = 0.5)
 
 # Read in observed water quality data
-obs.okareka<-read.csv("plotting_data/Obs_data_template.csv")
-obs.okareka$Date<-as.Date(obs.okareka$Date,format="%d/%m/%Y")
-obs.temp<-obs.okareka[,c('Date','Depth','TEMP')]  # subset observed data to remain temperature observations
+obs.okareka <- read.csv("plotting_data/Obs_data_template.csv")
+obs.okareka$Date <- as.Date(obs.okareka$Date,format="%d/%m/%Y")
+obs.temp <- obs.okareka[,c('Date','Depth','TEMP')]  # subset observed data to remain temperature observations
 
 # calculate five model performance metrics
-# objective_fun(sim = temp.interpolated,
-#              obs = obs.okareka,
-#              fun = c('NSE', 'RMSE', 'MAE', 'Pearson', 'PAE'),
-#              start.date = '2002-01-23',
-#              end.date = '2016-12-31',
-#              min.depth = 0,
-#              max.depth = 33,
-#              by.value = 0.5)
+objective_fun(sim = temp.interpolated[2:4,],
+              obs = obs.temp[obs.temp$Depth == 1, ],
+              fun = c('NSE', 'RMSE', 'MAE', 'Pearson', 'PAE'),
+              start.date = '2002-01-23',
+              end.date = '2016-12-31',
+              min.depth = 0.5,
+              max.depth = 1.5,
+              by.value = 0.5)
 
 #---
 # contour plot - Figure 4 in the M/S
@@ -130,7 +130,7 @@ ggsave(filename = "Figrue_05.png", height = 4, width = 7)
 #---
 # time serise plot - Figure 6 in the M/S
 #---
-plot_ts(sim = temp.interpolated,
+p <- plot_ts(sim = temp.interpolated,
         obs = obs.temp,
         target.depth = c(1, 14, 30),
         sim.start = "2002-01-23",
@@ -141,6 +141,45 @@ plot_ts(sim = temp.interpolated,
         max.depth = 33,
         by.value = 0.5,
         ylabel = "Temperature \u00B0C")
+
+rmse_dpt01 <- objective_fun(sim = temp.interpolated[2:4,],
+                           obs = obs.temp[obs.temp$Depth == 1, ],
+                           fun = c('RMSE'),
+                           start.date = '2002-01-23',
+                           end.date = '2016-12-31',
+                           min.depth = 0.5,
+                           max.depth = 1.5,
+                           by.value = 0.5)
+
+rmse_dpt14 <- objective_fun(sim = temp.interpolated[28:30,],
+                           obs = obs.temp[obs.temp$Depth == 14, ],
+                           fun = c('RMSE'),
+                           start.date = '2002-01-23',
+                           end.date = '2016-12-31',
+                           min.depth = 13.5,
+                           max.depth = 14.5,
+                           by.value = 0.5)
+
+rmse_dpt30 <- objective_fun(sim = temp.interpolated[60:62,],
+                           obs = obs.temp[obs.temp$Depth == 30, ],
+                           fun = c('RMSE'),
+                           start.date = '2002-01-23',
+                           end.date = '2016-12-31',
+                           min.depth = 29.5,
+                           max.depth = 30.5,
+                           by.value = 0.5)
+
+
+rmse_text <- data.frame(x = as.Date('2007-06-01'),
+                        y = 25,
+                        Depth = c(1, 14, 30),
+                        label = c(paste0('RMSE = ', round(rmse_dpt01$RMSE,2), ' \u00B0C'), 
+                                  paste0('RMSE = ', round(rmse_dpt14$RMSE,2), ' \u00B0C'), 
+                                  paste0('RMSE = ', round(rmse_dpt30$RMSE,2), ' \u00B0C')))
+
+p + ylim(8,26) +
+  geom_text(data = rmse_text, 
+            mapping = aes(x = x, y = y, label = label))
 
 ggsave(filename = 'Figure_06.png', height = 4, width = 7)
 
