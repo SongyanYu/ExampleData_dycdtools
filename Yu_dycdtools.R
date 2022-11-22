@@ -22,9 +22,9 @@ library(dycdtools)
 lake.temp <- read.csv("calibration_data/Obs_data_template.csv")
 lake.temp$Date <- as.Date(lake.temp$Date, format = '%Y-%m-%d')
 
-# the current setting of calib_assist would take 1 hour to run on 7 cores.
-# if only for demo purpose, try changing 'combination' to 'random', and
-# add a new argument 'n = 3'.
+# the current setting of calib_assist will take 1 hour to run on 7 cores.
+# if for demo purpose only, you can make the following changes to shorten the running time:
+# try changing 'combination' to 'random', and add a new argument 'n = 3'.
 calib_assist(cal.para = "calibration_data/Calibration_parameters.csv",
              combination = "all",
              model.var = c("TEMP"),
