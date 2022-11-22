@@ -2,7 +2,7 @@
 # This script is associated with the R Journal paper
 # "dycdtools: an R Package for Assisting Calibration and Visualising Outputs of an Aquatic Ecosystem Model".
 #
-# This script reproduces the results of model output visualisation (Figure 4-6) in the paper.
+# This script reproduces the figures of the model outputs (Figure 4-6) in the paper.
 #
 # Author: Songyan Yu
 # Date created: 03/07/2020
