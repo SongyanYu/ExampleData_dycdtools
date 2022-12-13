@@ -1,5 +1,7 @@
 # Example Data for the R package dycdtools
 
+[![DOI](https://zenodo.org/badge/489898394.svg)](https://zenodo.org/badge/latestdoi/489898394)
+
 This repository includes example data associated with the R package dycdtools. Following the below instructions, users will be able to reproduce figures 3-7 presented in the R journal paper 'dycdtools: an R Package for Assisting Calibration and Visualising Outputs of an Aquatic Ecosystem Model'. Users are encouraged to read the manuscript (*DOI will be provided here after the paper is accepted for publication*) before playing with the example data here.
 
 ## Application instructions
